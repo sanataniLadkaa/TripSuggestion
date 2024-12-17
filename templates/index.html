@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour Suggestion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: linear-gradient(to top, #87ceeb, hwb(320 6% 5%), hwb(0 0% 100%));
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #container {
+            background-image: linear-gradient(to bottom, #87ceeb, hwb(0 21% 5%), hwb(0 0% 100%));
+            border-radius: 8px;
+            box-shadow: 0 2px 4px #3fa1ec1a;
+            padding: 20px;
+            width: 400px;
+        }
+        #voiceButton {
+            background-color: aquamarine;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: aqua;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: aquamarine;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid hsl(179, 83%, 67%);
+        }
+
+        button[type="submit"] {
+            padding: 10px;
+            background-color: hsl(211, 96%, 80%);
+            color: hwb(256 4% 4%);
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color:  hwb(192 0% 0%);
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Adding background audio -->
+    <audio autoplay loop>
+        <source src="WhatsApp Audio 2024-04-11 at 6.36.00 PM.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div id="container">
+        <h1>Tour & Ghumo</h1>
+        <form id="predictionForm" action="/predict" method="post">
+
+            <label for="Climate">Climate (Tropical , Cold , Mild , Hot):</label>
+            <input type="text" id="Climate" name="Climate">
+            
+            <label for="activities">Activities (Beach , Skiing , cultural , Historical , Sports activities):</label>
+            <input type="text" id="activities" name="activities">
+            
+            <label for="budget">Budget (per person):</label>
+            <input type="text" id="budget" name="budget">
+
+            <label for="region">Region (in India/ Out of India):</label>
+            <input type="text" id="region" name="region">
+
+            <button type="submit" id="predictButton">Predict</button>
+        </form>
+        <div id="result"></div>
+        
+        <button id="voiceButton">Speak</button>
+    </div>
+
+    
+    <script>
+        // Add event listener to the voice input button
+        document.getElementById("voiceButton").addEventListener("click", startVoiceInput);
+        
+        const inputIds = ["Climate", "activities", "budget", "region"]; // IDs of input fields
+        let currentIndex = 0; // Index to keep track of the current input field
+        
+        // Function to initiate voice input
+        function startVoiceInput() {
+            const recognition = new webkitSpeechRecognition(); // Create a new instance of SpeechRecognition
+            recognition.lang = 'en-US'; // Set the language to English (US)
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript; // Get the transcript from the result
+                console.log("Voice input:", transcript);
+                fillInput(transcript); // Fill the current input field with the voice input
+            };
+            
+            recognition.start(); // Start listening for speech
+        }
+        
+        // Function to fill input fields with voice input
+        function fillInput(transcript) {
+            document.getElementById(inputIds[currentIndex]).value = transcript; // Fill current input field
+            currentIndex++; // Move to the next input field
+            if (currentIndex < inputIds.length) {
+                // If there are more input fields, initiate voice input for the next field
+                startVoiceInput();
+            } else {
+                // If all input fields have been filled, click the predict button
+                document.getElementById("predictButton").click();
+            }
+        }
+        
+        document.getElementById("predictionForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const response = await fetch("/predict", {
+                method: "POST",
+                body: formData
+            });
+            const data = await response.text();
+            document.getElementById("result").innerHTML = data; // Update the result section with the response
+        });
+    </script>
+</body>
+</html>
