@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%; /* Ensure full height */
+            overflow-y: auto; /* Allow vertical scrolling */
+            background-color: hsl(193, 89%, 69%);
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            width: 90%; /* Adjust width for responsiveness */
+            max-width: 800px; /* Limit max width */
+            margin: 20px auto; /* Center container */
+            padding: 20px;
+            background-image: linear-gradient(to bottom, hsl(97, 71%, 73%), rgb(124, 215, 251), hsl(0, 75%, 83%));
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin: 0;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0; /* Stick to the top of the viewport */
+            background-color: white;
+            z-index: 10;
+            padding: 10px;
+            border-radius: 8px 8px 0 0; /* Rounded top corners */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.7); /* Slight transparency for readability */
+            border-radius: 5px;
+        }
+
+        .return-button {
+            display: block;
+            width: 120px;
+            margin: 20px auto; /* Center button */
+            padding: 10px;
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .return-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1><i>Your Fortune</i></h1> <!-- Your Fortune heading -->
+        {% for paragraph in result.split('\n') %} <!-- Split result into paragraphs -->
+            <p class="result-text">{{ paragraph }}</p> <!-- Display each paragraph -->
+        {% endfor %}
+        <button class="return-button" onclick="window.location.href = '/';">Return to Input</button>
+    </div>
+</body>
+</html>
